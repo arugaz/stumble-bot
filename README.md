@@ -24,8 +24,9 @@ Default :
 Round Type :
 - Check at httpcanary (example "http://kitkabackend.eastus.cloudapp.azure.com:5010/round/finishv2/0") behind the url
 1. 0 Mean you lost early
-2. 1 Mean you lost at 3rd
-3. 2 Mean you are the winner 
+2. 1 Mean you lost
+3. 2 Mean you lost at 3rd
+4. 3 Mean you are the winner 
 
 Default
 

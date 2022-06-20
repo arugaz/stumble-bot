@@ -26,7 +26,7 @@ var runCommand = &cobra.Command{
 			fmt.Printf("%s[errors] %s%s\n%sgiven: %s", vars.ColorRed, vars.ColorReset, "invalid authorization", vars.ColorYellow, vars.Auth)
 			return
 		}
-		if vars.Round < 0 || vars.Round >= 3 {
+		if vars.Round < 0 || vars.Round > 3 {
 			fmt.Printf("%s[errors] %s%s\n%sgiven: %d", vars.ColorRed, vars.ColorReset, "invalid round available 0-2", vars.ColorYellow, vars.Round)
 			return
 		}
