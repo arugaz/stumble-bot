@@ -7,8 +7,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/ArugaZ/stumble-bot/types"
 	"github.com/ArugaZ/stumble-bot/vars"
@@ -56,27 +54,18 @@ func decResponse(resp *http.Response) (*types.StumbleResponse, error) {
 func Run(auth *vars.Vars) {
 	url := fmt.Sprintf(auth.Url, auth.Round)
 	auths := auth.Auth
-	wg := sync.WaitGroup{}
 
 	for {
-		wg.Add(1)
-		go func(url, auths string) {
-			defer wg.Done()
-			resp, err := httpRequest(url, auths)
-			if err != nil {
-				fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
-				return
-			}
-			data, err := decResponse(resp)
-			if err != nil {
-				if err.Error() == "server error" {
-					return
-				}
-				fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
-				return
-			}
-			fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Country, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.HiddenRating, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Crowns)
-		}(url, auths)
-		time.Sleep(200 * time.Millisecond)
+		resp, err := httpRequest(url, auths)
+		if err != nil {
+			fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
+			continue
+		}
+		data, err := decResponse(resp)
+		if err != nil {
+			fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
+			continue
+		}
+		fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Country, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.HiddenRating, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Crowns)
 	}
 }

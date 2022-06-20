@@ -30,8 +30,9 @@ var runCommand = &cobra.Command{
 			fmt.Printf("%s[errors] %s%s\n%sgiven: %d", vars.ColorRed, vars.ColorReset, "invalid round available 0-2", vars.ColorYellow, vars.Round)
 			return
 		}
+
 		app.Run(&vars.Vars{
-			Auth:  vars.Auth,
+			Auth:  strings.Trim(vars.Auth, "\n"),
 			Round: vars.Round,
 			Url:   vars.Url,
 		})

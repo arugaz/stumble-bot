@@ -11,7 +11,7 @@ Stumble Bot for Push Rank
 ```bash
 git clone https://github.com/ArugaZ/stumble-bot.git
 cd stumble-bot
-go build main.go
+go build -ldflags "-s -w" main.go
 ```
 1. Download App HTTPCanary (for sniff http request)
 2. Run HTTPCanary and play stumble, take 1st winner at game (for boost)
