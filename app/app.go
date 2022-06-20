@@ -69,11 +69,14 @@ func Run(auth *vars.Vars) {
 			}
 			data, err := decResponse(resp)
 			if err != nil {
+				if err.Error() == "server error" {
+					return
+				}
 				fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
 				return
 			}
 			fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Country, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.HiddenRating, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Crowns)
 		}(url, auths)
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 }
