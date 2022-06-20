@@ -31,7 +31,6 @@ func httpRequest(url string, Auth string) (*http.Response, error) {
 func decResponse(resp *http.Response) (*types.StumbleResponse, error) {
 	data := new(types.StumbleResponse)
 	defer resp.Body.Close()
-	fmt.Println(resp.StatusCode)
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -56,19 +55,17 @@ func Run(auth *vars.Vars) {
 	url := fmt.Sprintf(auth.Url, auth.Round)
 	auths := auth.Auth
 
-	// for {
-	resp, err := httpRequest(url, auths)
-	if err != nil {
-		fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
-		return
-		// continue
+	for {
+		resp, err := httpRequest(url, auths)
+		if err != nil {
+			fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
+			continue
+		}
+		data, err := decResponse(resp)
+		if err != nil {
+			fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
+			continue
+		}
+		fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Country, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.HiddenRating, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Crowns)
 	}
-	data, err := decResponse(resp)
-	if err != nil {
-		fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
-		return
-		// continue
-	}
-	fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Country, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.HiddenRating, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Crowns)
-	// }
 }
