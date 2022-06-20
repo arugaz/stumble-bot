@@ -14,12 +14,12 @@ import (
 )
 
 func Run(auth *vars.Vars) {
+	urls := fmt.Sprintf(auth.Url, auth.Round)
+	auths := auth.Auth
 	for {
 		data := new(types.StumbleResponse)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 		defer cancel()
-		urls := fmt.Sprintf(auth.Url, auth.Round)
-		auths := auth.Auth
 
 		// http request
 		tr := &http.Transport{}
