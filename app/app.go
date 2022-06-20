@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -36,11 +37,15 @@ func decResponse(resp *http.Response) (*types.StumbleResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	if string(body) == "" {
+	html := string(body)
+	if html == "" {
 		return nil, errors.New("check your auth")
 	}
-	if string(body) == "BANNED" {
+	if strings.Contains(html, "BANNED") {
 		return nil, errors.New("your account got banned")
+	}
+	if strings.Contains(html, "SERVER_ERROR") {
+		return nil, errors.New("server error")
 	}
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, err
@@ -59,15 +64,15 @@ func Run(auth *vars.Vars) {
 			defer wg.Done()
 			resp, err := httpRequest(url, auths)
 			if err != nil {
-				fmt.Printf("%serrors: %s%v\n", vars.ColorRed, vars.ColorReset, err)
+				fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
 				return
 			}
 			data, err := decResponse(resp)
 			if err != nil {
-				fmt.Printf("%serrors: %s%v\n", vars.ColorRed, vars.ColorReset, err)
+				fmt.Printf("%s[errors] %s%v\n", vars.ColorRed, vars.ColorReset, err)
 				return
 			}
-			fmt.Printf("%ssuccess: %s%v\n", vars.ColorGreen, vars.ColorReset, data.User.Crowns)
+			fmt.Printf("%s[success]%s Id:%s %d %s|%s Username:%s %s %s|%s Country:%s %s %s|%s Trophy:%s %d %s|%s Crown:%s %d\n", vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.ID, vars.ColorGreen, vars.ColorCyan, vars.ColorReset, data.User.Username, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Country, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.HiddenRating, vars.ColorCyan, vars.ColorGreen, vars.ColorReset, data.User.Crowns)
 		}(url, auths)
 		time.Sleep(50 * time.Millisecond)
 	}

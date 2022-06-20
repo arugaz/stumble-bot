@@ -23,11 +23,11 @@ var runCommand = &cobra.Command{
 	Use: "stumble",
 	Run: func(cmd *cobra.Command, args []string) {
 		if !strings.Contains(vars.Auth, "DeviceId") || !strings.Contains(vars.Auth, "Token") {
-			fmt.Printf("%serrors: %s%s\n%sgiven: %s", vars.ColorRed, vars.ColorReset, "invalid authorization", vars.ColorYellow, vars.Auth)
+			fmt.Printf("%s[errors] %s%s\n%sgiven: %s", vars.ColorRed, vars.ColorReset, "invalid authorization", vars.ColorYellow, vars.Auth)
 			return
 		}
 		if vars.Round < 0 || vars.Round >= 3 {
-			fmt.Printf("%serrors: %s%s\n%sgiven: %d", vars.ColorRed, vars.ColorReset, "invalid round available 0-2", vars.ColorYellow, vars.Round)
+			fmt.Printf("%s[errors] %s%s\n%sgiven: %d", vars.ColorRed, vars.ColorReset, "invalid round available 0-2", vars.ColorYellow, vars.Round)
 			return
 		}
 		app.Run(&vars.Vars{
@@ -41,7 +41,7 @@ var runCommand = &cobra.Command{
 func init() {
 	auth, err := ioutil.ReadFile("auth.txt")
 	if err != nil {
-		fmt.Printf("%serrors: %v", vars.ColorRed, err)
+		fmt.Printf("%s[errors] %v", vars.ColorRed, err)
 		return
 	}
 	cobra.OnInitialize()
@@ -54,7 +54,7 @@ func init() {
 
 func Execute() {
 	if err := rootCommand.Execute(); err != nil {
-		fmt.Printf("%serrors: %v", vars.ColorRed, err)
+		fmt.Printf("%s[errors] %v", vars.ColorRed, err)
 		return
 	}
 }
